@@ -2,7 +2,7 @@ module.exports.iniciaChat = function(application, req, res) {
     var dadosForm = req.body;
 
     req.check('apelido', 'Nome ou apelido é obrigatório').isLength({ min: 1 });
-    req.check('apelido', 'Nome ou apelido deve conter mais de 5 caracteres').isLength({ min: 3 });
+    req.check('apelido', 'Nome ou apelido deve conter mais de 5 caracteres').isLength({ min: 5 });
 
     var erros = req.validationErrors();
 
@@ -11,5 +11,10 @@ module.exports.iniciaChat = function(application, req, res) {
         return;
     }
 
-    res.render('chat');
+    application.get('io').emit(
+        'msgParaCliente',
+        { apelido: dadosForm.apelido, mensagem: 'acabou de entrar no chat' }
+    );
+
+    res.render('chat', { dadosForm: dadosForm });
 };
